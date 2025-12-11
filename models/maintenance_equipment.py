@@ -28,21 +28,6 @@ class MaintenanceEquipment(models.Model):
         compute='_compute_status',
         store=True
     )
-    related_workcenters = fields.Many2many(
-        'mrp.workcenter',
-        string='Centros de Trabajo Relacionados'
-    )
-
-    workcenter_count = fields.Integer(
-        string="Workcenters",
-        compute="_compute_workcenter_count",
-    )
-
-    def _compute_workcenter_count(self):
-        for record in self:
-            record.workcenter_count = self.env['mrp.workcenter'].search_count(
-                [('assign_equipment_id', '=', record.id)]
-            )
 
     def recalc_equipment_computed_fields(self):
         equipments = self.search([])

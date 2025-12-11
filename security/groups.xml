@@ -10,8 +10,7 @@
         <record id="group_maintenance_technical_admin" model="res.groups">
             <field name="name">Adnimistrador de Técnico</field>
             <field name="category_id" ref="module_category_maintenance"/>
-            <field name="implied_ids" eval="[
-                (4, ref('mrp.group_mrp_user')), 
+            <field name="implied_ids" eval="[ 
                 (4, ref('base.group_system')),
                 (4, ref('mass_mailing.group_mass_mailing_user'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
@@ -20,8 +19,7 @@
         <!-- Actualización del grupo de Responsable de Equipamiento -->
         <record id="maintenance.group_equipment_manager" model="res.groups">
             <field name="category_id" ref="module_category_maintenance"/>
-            <field name="implied_ids" eval="[
-                (4, ref('mrp.group_mrp_user')), 
+            <field name="implied_ids" eval="[ 
                 (4, ref('base.group_system')),
                 (4, ref('mass_mailing.group_mass_mailing_user'))
             ]"/>

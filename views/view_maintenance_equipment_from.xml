@@ -9,7 +9,6 @@
                 <field name="location" position="before">
                     <field name="reception_date" string="Fecha de recepción"/>
                     <field name="warranty_expiration_date" string="Fecha de vencimiento de garantía"/>
-                    <field name="related_workcenters" invisible="1"/>
                 </field>
                 <xpath expr="//notebook" position="inside">
                     <page string="Manual">
@@ -23,19 +22,6 @@
                         </group>
                     </page>
                 </xpath>
-            </field>
-        </record>
-        
-        <record id="view_mrp_workcenter_list_filtered" model="ir.ui.view">
-            <field name="name">mrp.workcenter.list.filtered</field>
-            <field name="model">mrp.workcenter</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name" string="Nombre"/>
-                    <field name="tag_ids" string="Etiquetas" widget="many2many_tags" options="{'no_open': True}"/>
-                    <field name="assign_operator_id" string="Operarios" widget="many2many_tags" options="{'no_open': True}"/>
-                    <field name="assign_equipment_id" string="Equipos" widget="many2many_tags" options="{'no_open': True}"/>
-                </tree>
             </field>
         </record>
     </data>

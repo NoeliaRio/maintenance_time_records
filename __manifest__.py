@@ -8,7 +8,6 @@
     'depends': [
         'maintenance',              
         'maintenance_plan',
-        'mrp',
         'mass_mailing'
         #'maintenance_plan_activity'  
     ],
