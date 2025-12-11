@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="equipment_view_form_inherit" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.inherit</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <field name="location" position="before">
+                    <field name="reception_date" string="Fecha de recepción"/>
+                    <field name="warranty_expiration_date" string="Fecha de vencimiento de garantía"/>
+                    <field name="related_workcenters" invisible="1"/>
+                </field>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Manual">
+                        <group>
+                            <field name="manual_pdf" widget="pdf_viewer" options="{'filename': 'Manual.pdf'}" placeholder="Cargar archivo PDF"
+                            groups="maintenance_time_records.group_maintenance_technical_admin"/>
+                        </group>
+                        <group>
+                            <field name="manual_pdf_view" widget="pdf_viewer" readonly='1'
+                            groups="maintenance.group_equipment_manager"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_mrp_workcenter_list_filtered" model="ir.ui.view">
+            <field name="name">mrp.workcenter.list.filtered</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Nombre"/>
+                    <field name="tag_ids" string="Etiquetas" widget="many2many_tags" options="{'no_open': True}"/>
+                    <field name="assign_operator_id" string="Operarios" widget="many2many_tags" options="{'no_open': True}"/>
+                    <field name="assign_equipment_id" string="Equipos" widget="many2many_tags" options="{'no_open': True}"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

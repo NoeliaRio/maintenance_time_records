@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+    <record id="maintenance_plan_view_form_inherit" model="ir.ui.view">
+        <field name="name">maintenance.plan.form.inherit</field>
+        <field name="model">maintenance.plan</field>
+        <field name="inherit_id" ref="maintenance_plan.maintenance_plan_view_form"/>
+        <field name="arch" type="xml">
+            <field name="equipment_id" position="before">
+                <field name="code" string="Código" readonly="1"
+                    modifiers="{&quot;invisible&quot;: [[&quot;code&quot;, &quot;=&quot;, &quot;/&quot;]], &quot;readonly&quot;: true}"/>
+            </field> 
+            <xpath expr="//notebook" position="inside">
+                <page string="Cargar Instructivo">
+                    <group>
+                        <field name="instruction_pdf" widget="pdf_viewer" options="{'filename': 'Instructivo.pdf'}" placeholder="Cargar archivo PDF"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
