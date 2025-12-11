@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_maintenance_kanban_technical" model="ir.ui.view">
+            <field name="name">maintenance.request.kanban.technical</field>
+            <field name="model">maintenance.request</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="stage_id" sample="1">
+                    <field name="stage_id"/>
+                    <field name="color"/>
+                    <field name="priority"/>
+                    <field name="equipment_id"/>
+                    <field name="user_id"/>
+                    <field name="owner_user_id"/>
+                    <field name="category_id"/>
+                    <field name="kanban_state"/>
+                    <field name="activity_ids"/>
+                    <field name="activity_state"/>
+                    <field name="schedule_date"/>
+                    <field name="is_revision" invisible="1"/>
+                    <field name="is_finish" invisible="1"/>
+                    <templates>
+                        <t t-name="kanban-tooltip">
+                            <ul class="oe_kanban_tooltip">
+                                <li t-if="record.category_id.raw_value"><b>Categoria:</b> <t t-esc="record.category_id.value"/></li>
+                                <li t-if="record.user_id.raw_value"><b>Solicitud a:</b> <t t-esc="record.user_id.value"/></li>
+                            </ul>
+                        </t>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
+                                t-att-data-id="record.id">
+                                <div class="o_dropdown_kanban dropdown">
+                                    <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_content" tooltip="kanban-tooltip">
+                                    <div class="o_kanban_record_top">
+                                        <b class="o_kanban_record_title"><field name="name"/></b>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <span name="owner_user_id" t-if="record.owner_user_id.raw_value">Solicitado por: <field name="owner_user_id"/><br/></span>
+                                        <span class="oe_grey" t-if="record.equipment_id.raw_value"><field name="equipment_id"/><br/></span>
+                                        <span t-if="record.category_id.raw_value"><field name="category_id"/></span>
+                                        <br/>
+                                        <span class="o_field_label">
+                                            <strong>Fecha Prevista: </strong>
+                                            <field name="schedule_date" widget="date" options="{'format': 'dd/MM/yyyy'}"/>
+                                        </span>
+                                    </div>
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="priority" widget="priority"/>
+                                            <div class="o_kanban_inline_block ml4 mr4">
+                                                <field name="activity_ids" widget="kanban_activity"/>
+                                            </div>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <field name="kanban_state" widget="state_selection"/>
+                                            <field name="user_id" widget="many2one_avatar_user"/>
+                                            <button
+                                                type="object"
+                                                name="button_open_view_finish_custom"
+                                                class="btn btn-success"
+                                                icon="fa-check"
+                                                groups="maintenance_time_records.group_maintenance_technical_admin"
+                                                attrs="{'invisible': [('is_revision', '=', False)]}"/>
+                                            <button
+                                                type="object"
+                                                name="button_open_view_cancelled_custom"
+                                                class="btn btn-danger"
+                                                icon="fa-close"
+                                                groups="maintenance_time_records.group_maintenance_technical_admin"
+                                                attrs="{'invisible': [('is_finish', '=', True)]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_maintenance_request_kanban_technical" model="ir.actions.act_window">
+            <field name="name">Solicitudes de Mantenimiento</field>
+            <field name="res_model">maintenance.request</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_id" ref="view_maintenance_kanban_technical"/>
+            <field name="help" type="html">
+                <p>
+                    Aquí puedes ver las solicitudes de mantenimiento en formato Kanban para los Técnicos.
+                </p>
+            </field>
+        </record>
+
+        <record id="view_maintenance_finish_confirmation_form" model="ir.ui.view">
+            <field name="name">maintenance.finish.confirmation.form</field>
+            <field name="model">maintenance.request.finish.confirmation</field>
+            <field name="arch" type="xml">
+                <form string="Confirmar Finalización">
+                    <group>
+                        <p style="white-space: nowrap;">¿Está seguro de que desea finalizar esta solicitud de mantenimiento?"</p>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_finish" type="object" string="Confirmar" class="btn-primary"/>
+                        <button string="Omitir" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_open_finish_confirmation_form_maintenance" model="ir.actions.act_window">
+            <field name="name">Confirmación para finalizar mantenimiento</field>
+            <field name="res_model">maintenance.request.finish.confirmation</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="maintenance_time_records.view_maintenance_finish_confirmation_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_maintenance_cancelled_confirmation_form" model="ir.ui.view">
+            <field name="name">maintenance.cancelled.confirmation.form</field>
+            <field name="model">maintenance.request.finish.confirmation</field>
+            <field name="arch" type="xml">
+                <form string="Confirmar Cancelación">
+                    <group>
+                        <p style="white-space: nowrap;">¿Está seguro de que desea cancelar esta solicitud de mantenimiento?"</p>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_cancelled" type="object" string="Confirmar" class="btn-primary"/>
+                        <button string="Omitir" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_open_cancelled_confirmation_form_maintenance" model="ir.actions.act_window">
+            <field name="name">Confirmación para cancelar mantenimiento</field>
+            <field name="res_model">maintenance.request.finish.confirmation</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="maintenance_time_records.view_maintenance_cancelled_confirmation_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_search_maintenance_request_inherit" model="ir.ui.view">
+            <field name="name">Maintenance.Request.Search.Computrol</field>
+            <field name="model">maintenance.request</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+            <field name="arch" type="xml">
+                <filter name="my_maintenances" position="after">
+                    <filter string="Mantenimientos Pendientes"
+                        name="pending_maintenances"
+                        domain="[('is_previous_month', '=', True)]"/>
+                    <filter string="Mantenimientos Actuales"
+                        name="current_maintenances"
+                        domain="[('is_current_month', '=', True)]"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="ir_cron_recalculate_is_previous_and_current_month" model="ir.cron">
+            <field name="name">Recalculate.is.previous.month.and.is.current.month</field>
+            <field name="model_id" ref="model_maintenance_request"/>
+            <field name="state">code</field>
+            <field name="code">model._recalculate_is_previous_and_current_month()</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="active" eval="True"/>
+            <field name="interval_type">days</field>
+            <field name="interval_number">1</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+
+        <menuitem id="menu_maintenance_kanban_technical"
+            name="Peticiones para técnicos"
+            sequence="100"
+            parent="maintenance.menu_maintenance_title"/>
+
+        <menuitem id="menuitem_maintenance_kanban_technical"
+            name="Peticiones"
+            parent="menu_maintenance_kanban_technical"
+            action="action_maintenance_request_kanban_technical"/>
+    </data>
+</odoo>

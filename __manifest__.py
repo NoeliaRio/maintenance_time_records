@@ -15,7 +15,11 @@
     ],
     'data': [
         'security/groups.xml',
-        'views/view_maintenance_plan_form.xml'
+        'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'views/view_maintenance_plan_form.xml',
+        'views/view_maintenance_request_form.xml',
+        'views/view_maintenance_kanban_technical.xml'
     ],
     'installable': True,
     'application': False,
