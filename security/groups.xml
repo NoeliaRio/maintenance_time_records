@@ -12,7 +12,6 @@
             <field name="category_id" ref="module_category_maintenance"/>
             <field name="implied_ids" eval="[
                 (4, ref('mrp.group_mrp_user')), 
-                (4, ref('hr_timesheet_activity.group_hr_activity_user')),
                 (4, ref('base.group_system')),
                 (4, ref('mass_mailing.group_mass_mailing_user'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
@@ -23,7 +22,6 @@
             <field name="category_id" ref="module_category_maintenance"/>
             <field name="implied_ids" eval="[
                 (4, ref('mrp.group_mrp_user')), 
-                (4, ref('hr_timesheet_activity.group_hr_activity_user')),
                 (4, ref('base.group_system')),
                 (4, ref('mass_mailing.group_mass_mailing_user'))
             ]"/>
