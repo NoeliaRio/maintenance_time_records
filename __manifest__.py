@@ -8,6 +8,9 @@
     'depends': [
         'maintenance',              
         'maintenance_plan',
+        'mrp',
+        'hr_timesheet_activity',
+        'mass_mailing'
         #'maintenance_plan_activity'  
     ],
     'data': [
