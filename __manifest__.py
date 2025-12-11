@@ -8,7 +8,7 @@
     'depends': [
         'maintenance',              
         'maintenance_plan',
-        'maintenance_plan_activity'  
+        #'maintenance_plan_activity'  
     ],
     'data': [
         'security/groups.xml',
