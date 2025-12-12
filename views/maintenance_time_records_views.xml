@@ -102,4 +102,21 @@
               action="action_maintenance_pause_cause"
               sequence="56"/>
 
+    <record id="view_maintenance_pause_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.pause.wizard.form</field>
+        <field name="model">maintenance.pause.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Seleccionar causa de pausa">
+                <group>
+                    <field name="maintenance_request_id" invisible="1" readonly="1"/>
+                    <field name="pause_cause_id" required="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm_pause" type="object" string="Confirmar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
 </odoo>
