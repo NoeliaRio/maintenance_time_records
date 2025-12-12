@@ -11,12 +11,14 @@ class MaintenanceRequestFinishConfirmation(models.TransientModel):
         equipment = self.env['maintenance.equipment'].browse(self.env.context.get('equipment_id'))
         maintenance_plan = self.env['maintenance.plan'].browse(self.env.context.get('maintenance_plan_id'))
         if maintenance_request:
-            stage_finished = self.env["maintenance.stage"].search(
-                ['|', ('name', '=', 'Finalizado'), ('name', '=', 'Done')],
-                limit=1
-            )
+            stage_finished = self.env.ref('maintenance.stage_3', raise_if_not_found=False)
             if not stage_finished:
-                raise ValidationError("No se encontró la etapa 'Finalizado/Done'. Revise la configuración de etapas.")
+                stage_finished = self.env["maintenance.stage"].search(
+                    ['|', '|', ('name', '=', 'Finalizado'), ('name', '=', 'Done'), ('name', '=', 'Reparado')],
+                    limit=1
+                )
+            if not stage_finished:
+                raise ValidationError("No se encontró la etapa 'Finalizado/Reparado/Done'. Revise la configuración de etapas.")
 
             current_request_date = maintenance_request.schedule_date
             maintenance_request.stage_id = stage_finished.id
@@ -31,12 +33,14 @@ class MaintenanceRequestFinishConfirmation(models.TransientModel):
         equipment = self.env['maintenance.equipment'].browse(self.env.context.get('equipment_id'))
         maintenance_plan = self.env['maintenance.plan'].browse(self.env.context.get('maintenance_plan_id'))
         if maintenance_request:
-            stage_cancelled = self.env["maintenance.stage"].search(
-                ['|', ('name', '=', 'Cancelado'), ('name', '=', 'Cancelled')],
-                limit=1
-            )
+            stage_cancelled = self.env.ref('maintenance.stage_4', raise_if_not_found=False)
             if not stage_cancelled:
-                raise ValidationError("No se encontró la etapa 'Cancelado/Cancelled'. Revise la configuración de etapas.")
+                stage_cancelled = self.env["maintenance.stage"].search(
+                    ['|', '|', ('name', '=', 'Cancelado'), ('name', '=', 'Cancelled'), ('name', '=', 'Desechar')],
+                    limit=1
+                )
+            if not stage_cancelled:
+                raise ValidationError("No se encontró la etapa 'Cancelado/Desechar/Cancelled'. Revise la configuración de etapas.")
 
             current_request_date = maintenance_request.schedule_date
             maintenance_request.stage_id = stage_cancelled.id
