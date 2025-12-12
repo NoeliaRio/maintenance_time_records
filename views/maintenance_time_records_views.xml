@@ -98,7 +98,7 @@
 
     <menuitem id="menu_maintenance_pause_cause"
               name="Causas de pausa"
-              parent="maintenance.maintenance_configuration"
+              parent="maintenance.menu_maintenance_configuration"
               action="action_maintenance_pause_cause"
               sequence="56"/>
 
