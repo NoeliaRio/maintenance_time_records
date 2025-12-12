@@ -54,12 +54,12 @@ class MaintenanceRequest(models.Model):
     )
     time_state = fields.Selection(
         [
-            ('idle', 'Sin iniciar'),
-            ('active', 'En curso'),
-            ('pause', 'Pausado'),
-            ('done', 'Finalizado')
+            ('idle', 'Idle'),
+            ('active', 'Active'),
+            ('pause', 'Pause'),
+            ('done', 'Done')
         ],
-        string='Estado de tiempo',
+        string='Timer State',
         default='idle'
     )
     total_active_duration_hours = fields.Float(
@@ -242,6 +242,18 @@ class MaintenanceRequest(models.Model):
         if not self.end_date:
             self.end_date = now
         self.time_state = 'done'
+
+    def action_continue_time(self):
+        self.ensure_one()
+        now = fields.Datetime.now()
+        self._close_open_time_records()
+        self.env['maintenance.time_records'].create({
+            'maintenance_request_id': self.id,
+            'time_type': 'active',
+            'start_datetime': now,
+            'name': f"Tiempo activo - {self.name or self.code or ''}",
+        })
+        self.time_state = 'active'
 
     def action_pause_time(self):
         self.ensure_one()

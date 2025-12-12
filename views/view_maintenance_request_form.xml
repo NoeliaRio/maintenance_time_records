@@ -34,17 +34,22 @@
                         type="object"
                         string="Inicio"
                         class="btn-secondary"
-                        attrs="{'invisible': [('time_state', 'in', ['active'])]}"/>
+                        attrs="{'invisible': [('time_state', 'not in', ['idle'])]}"/>
                 <button name="action_pause_time"
                         type="object"
                         string="Pausa"
                         class="btn-secondary"
                         attrs="{'invisible': [('time_state', '!=', 'active')]}"/>
+                <button name="action_continue_time"
+                        type="object"
+                        string="Continuar"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('time_state', '!=', 'pause')]}"/>
                 <button name="action_finish_time"
                         type="object"
                         string="Finalizar"
                         class="btn-secondary"
-                        attrs="{'invisible': [('time_state', '=', 'done')]}"/>
+                        attrs="{'invisible': [('time_state', '!=', 'active')]}"/>
             </xpath>
             <field name="equipment_id" position="before">
                 <field name="code" string="Código" readonly="1"
