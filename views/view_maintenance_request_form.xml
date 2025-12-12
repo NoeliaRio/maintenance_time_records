@@ -65,6 +65,9 @@
                     <field name="end_date"/>
                 </group>
             </xpath>
+            <xpath expr="//field[@name='email_cc']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='request_date']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -106,9 +109,6 @@
                     </group>
                 </page>
                 <page string="Registros de tiempo">
-                    <group>
-                        <field name="total_active_duration_display" readonly="1"/>
-                    </group>
                     <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
                         <tree editable="bottom">
                             <field name="time_type"/>

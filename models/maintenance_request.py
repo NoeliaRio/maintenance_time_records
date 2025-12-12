@@ -178,6 +178,12 @@ class MaintenanceRequest(models.Model):
                 )
             self = self.sudo()
             self.activity_update()
+            stage_repaired = self.env.ref('maintenance.stage_3', raise_if_not_found=False)
+            stage_scrap = self.env.ref('maintenance.stage_4', raise_if_not_found=False)
+            if stage_repaired and new_stage.id == stage_repaired.id:
+                vals.setdefault('check_date_time', fields.Datetime.now())
+            if stage_scrap and new_stage.id == stage_scrap.id:
+                vals.setdefault('cancellation_date_time', fields.Datetime.now())
 
         return super(MaintenanceRequest, self).write(vals)
 
@@ -225,6 +231,7 @@ class MaintenanceRequest(models.Model):
         self.ensure_one()
         now = fields.Datetime.now()
         self._close_open_time_records()
+        stage_in_progress = self.env.ref('maintenance.stage_1', raise_if_not_found=False)
         self.env['maintenance.time_records'].create({
             'maintenance_request_id': self.id,
             'time_type': 'active',
@@ -234,6 +241,8 @@ class MaintenanceRequest(models.Model):
         if not self.start_date:
             self.start_date = now
         self.time_state = 'active'
+        if stage_in_progress and self.stage_id != stage_in_progress:
+            self.stage_id = stage_in_progress.id
 
     def action_finish_time(self):
         self.ensure_one()
@@ -242,6 +251,10 @@ class MaintenanceRequest(models.Model):
         if not self.end_date:
             self.end_date = now
         self.time_state = 'done'
+        stage_revision = self.env.ref('maintenance_time_records.maintenance_stage_revision', raise_if_not_found=False)
+        if stage_revision and self.stage_id != stage_revision:
+            # allow changing to revision when finishing time tracking
+            self.with_context(allow_stage_change=True).stage_id = stage_revision.id
 
     def action_continue_time(self):
         self.ensure_one()
@@ -280,6 +293,8 @@ class MaintenanceRequest(models.Model):
             hours = int(total_seconds // 3600)
             minutes = int((total_seconds % 3600) // 60)
             seconds = int(total_seconds % 60)
-            request.total_active_duration_hours = round(total_seconds / 3600.0, 2) if total_seconds else 0.0
+            hours_float = total_seconds / 3600.0 if total_seconds else 0.0
+            request.total_active_duration_hours = round(hours_float, 2)
+            request.duration = round(hours_float, 2)
             # Mostrar hh:mm:ss
             request.total_active_duration_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
