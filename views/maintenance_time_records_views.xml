@@ -85,7 +85,7 @@
 
     <menuitem id="menu_maintenance_time_records"
               name="Registro de tiempos"
-              parent="maintenance.menu_maintenance_title"
+              parent="maintenance.maintenance_reporting"
               action="action_maintenance_time_records"
               sequence="55"/>
 
@@ -98,7 +98,7 @@
 
     <menuitem id="menu_maintenance_pause_cause"
               name="Causas de pausa"
-              parent="maintenance.menu_maintenance_title"
+              parent="maintenance.maintenance_configuration"
               action="action_maintenance_pause_cause"
               sequence="56"/>
 
