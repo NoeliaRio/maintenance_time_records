@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
         <field name="arch" type="xml">
             <header position="inside">
+                <field name="time_state" invisible="1"/>
                 <field name="is_revision" invisible="1"/>
                 <field name="is_finish" invisible="1"/>
                 <button
