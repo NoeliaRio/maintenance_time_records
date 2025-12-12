@@ -23,6 +23,7 @@
         'views/view_maintenance_kanban_technical.xml',
         'views/maintenance_time_records_views.xml'
     ],
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': False,
 }

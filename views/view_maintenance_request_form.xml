@@ -111,6 +111,7 @@
                 <page string="Registros de tiempo">
                     <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
                         <tree editable="bottom">
+                            <field name="user_id" readonly="1"/>
                             <field name="time_type"/>
                             <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
                             <field name="start_datetime"/>
@@ -122,6 +123,7 @@
                         <form string="Registro de tiempo">
                             <sheet>
                                 <group>
+                                    <field name="user_id" readonly="1"/>
                                     <field name="time_type"/>
                                     <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
                                     <field name="start_datetime"/>

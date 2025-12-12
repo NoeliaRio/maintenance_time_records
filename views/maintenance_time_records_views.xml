@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <tree string="Registros de tiempo">
                 <field name="maintenance_request_id"/>
+                <field name="user_id"/>
                 <field name="time_type"/>
                 <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')]}"/>
                 <field name="start_datetime"/>
@@ -25,6 +26,7 @@
                 <sheet>
                     <group>
                         <field name="maintenance_request_id" context="{'default_maintenance_request_id': active_id}"/>
+                        <field name="user_id"/>
                         <field name="time_type"/>
                         <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
                         <field name="start_datetime"/>

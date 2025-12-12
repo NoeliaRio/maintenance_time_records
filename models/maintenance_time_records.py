@@ -51,6 +51,12 @@ class MaintenanceTimeRecord(models.Model):
         default=lambda self: self.env.company,
         required=True
     )
+    user_id = fields.Many2one(
+        'res.users',
+        string='Usuario',
+        default=lambda self: self.env.user,
+        required=True
+    )
     name = fields.Char(
         string="Descripción",
         default="Registro de tiempo",
