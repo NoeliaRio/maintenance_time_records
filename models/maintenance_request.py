@@ -47,6 +47,11 @@ class MaintenanceRequest(models.Model):
         compute='_compute_is_finish',
         default=False,
         store=True)
+    time_record_ids = fields.One2many(
+        'maintenance.time_records',
+        'maintenance_request_id',
+        string="Registros de tiempo"
+    )
 
     @api.depends('stage_id')
     def _compute_is_revision(self):

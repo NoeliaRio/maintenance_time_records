@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_maintenance_time_records_tree" model="ir.ui.view">
+        <field name="name">maintenance.time.records.tree</field>
+        <field name="model">maintenance.time_records</field>
+        <field name="arch" type="xml">
+            <tree string="Registros de tiempo">
+                <field name="time_type"/>
+                <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')]}"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="duration_display" readonly="1"/>
+                <field name="duration_hours" readonly="1"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_maintenance_time_records_form" model="ir.ui.view">
+        <field name="name">maintenance.time.records.form</field>
+        <field name="model">maintenance.time_records</field>
+        <field name="arch" type="xml">
+            <form string="Registro de tiempo">
+                <sheet>
+                    <group>
+                        <field name="maintenance_request_id" context="{'default_maintenance_request_id': active_id}"/>
+                        <field name="time_type"/>
+                        <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
+                        <field name="start_datetime"/>
+                        <field name="end_datetime"/>
+                        <field name="duration_display" readonly="1"/>
+                        <field name="duration_hours" readonly="1"/>
+                        <field name="description"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_pause_cause_tree" model="ir.ui.view">
+        <field name="name">maintenance.pause.cause.tree</field>
+        <field name="model">maintenance.pause.cause</field>
+        <field name="arch" type="xml">
+            <tree string="Causas de pausa">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_maintenance_pause_cause_form" model="ir.ui.view">
+        <field name="name">maintenance.pause.cause.form</field>
+        <field name="model">maintenance.pause.cause</field>
+        <field name="arch" type="xml">
+            <form string="Causa de pausa">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_form_inherit_time_records" model="ir.ui.view">
+        <field name="name">maintenance.request.form.inherit.time.records</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance_plan.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Registros de tiempo">
+                    <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
+                        <tree editable="bottom">
+                            <field name="time_type"/>
+                            <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="duration_display" readonly="1"/>
+                            <field name="duration_hours" readonly="1"/>
+                            <field name="description"/>
+                        </tree>
+                        <form string="Registro de tiempo">
+                            <sheet>
+                                <group>
+                                    <field name="time_type"/>
+                                    <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
+                                    <field name="start_datetime"/>
+                                    <field name="end_datetime"/>
+                                    <field name="duration_display" readonly="1"/>
+                                    <field name="duration_hours" readonly="1"/>
+                                    <field name="description"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

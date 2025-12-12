@@ -6,7 +6,8 @@
     'author': 'Noelia Rio',
     'license': 'LGPL-3',
     'depends': [
-        'maintenance',              
+        'maintenance',
+        'analytic',
         'maintenance_plan',
         'mass_mailing'
         #'maintenance_plan_activity'  
@@ -18,7 +19,8 @@
         'data/maintenance_stage_data.xml',
         'views/view_maintenance_plan_form.xml',
         'views/view_maintenance_request_form.xml',
-        'views/view_maintenance_kanban_technical.xml'
+        'views/view_maintenance_kanban_technical.xml',
+        'views/maintenance_time_records_views.xml'
     ],
     'installable': True,
     'application': False,
