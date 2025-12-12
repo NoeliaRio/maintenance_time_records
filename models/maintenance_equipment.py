@@ -187,13 +187,17 @@ class MaintenanceEquipment(models.Model):
 
     def _create_next_request(self, mtn_plan, current_request_date):
         for equipment in self:
-            if not mtn_plan.next_maintenance_date:
-                raise ValueError("La fecha de mantenimiento no está definida correctamente.")
+            if not mtn_plan:
+                raise ValidationError("La solicitud no tiene un plan de mantenimiento asociado.")
+
+            base_date = current_request_date or mtn_plan.next_maintenance_date
+            if not base_date:
+                raise ValidationError("La fecha de mantenimiento no está definida correctamente.")
 
             if mtn_plan.interval and mtn_plan.interval > 0:
-                next_maintenance_date = current_request_date + relativedelta(months=mtn_plan.interval)
+                next_maintenance_date = base_date + relativedelta(months=mtn_plan.interval)
             else:
-                raise ValueError("El intervalo de mantenimiento no es válido.")
+                raise ValidationError("El intervalo de mantenimiento no es válido.")
 
             equipment_name = equipment.name or "Equipo"
             frequency_name = self._get_frequency_name(mtn_plan.interval, mtn_plan.interval_step)
