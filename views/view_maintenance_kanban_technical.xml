@@ -129,6 +129,7 @@
                 <form string="Confirmar Cancelación">
                     <group>
                         <p style="white-space: nowrap;">¿Está seguro de que desea cancelar esta solicitud de mantenimiento?"</p>
+                        <field name="create_next_request" string="Crear próxima solicitud preventiva"/>
                     </group>
                     <footer>
                         <button name="action_confirm_cancelled" type="object" string="Confirmar" class="btn-primary"/>
