@@ -130,13 +130,23 @@ class MaintenanceRequest(models.Model):
                         % request.stage_id.name
                     )
 
+            stage_done = self.env.ref('maintenance.stage_3', raise_if_not_found=False)
+            stage_cancelled = self.env.ref('maintenance.stage_4', raise_if_not_found=False)
+            restricted_xmlids = {'maintenance.stage_3', 'maintenance.stage_4'}
             new_stage = self.env['maintenance.stage'].browse(vals['stage_id'])
             if not new_stage.exists():
                 raise ValidationError("La etapa especificada no existe.")
 
-            restricted_stages = ['Finalizado', 'Cancelado']
+            restricted_stage_ids = {stage.id for stage in (stage_done, stage_cancelled) if stage}
+            restricted_stage_names = ['Finalizado', 'Cancelado', 'Done', 'Cancelled', 'Reparado', 'Desechar']
 
-            if new_stage.name in restricted_stages and not self.env.context.get('allow_stage_change'):
+            is_restricted = (
+                new_stage.id in restricted_stage_ids
+                or new_stage.get_external_id().get(new_stage.id) in restricted_xmlids
+                or new_stage.name in restricted_stage_names
+            )
+
+            if is_restricted and not self.env.context.get('allow_stage_change'):
                 raise ValidationError(
                     "No se puede mover esta solicitud al estado '%s' desde el tablero Kanban. "
                     "Por favor, utilice el botón correspondiente." % new_stage.name
