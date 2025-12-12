@@ -4,3 +4,4 @@ access_maintenance_time_records_user,access.maintenance.time.records.user,model_
 access_maintenance_time_records_admin,access.maintenance.time.records.admin,model_maintenance_time_records,maintenance_time_records.group_maintenance_technical_admin,1,1,1,1
 access_maintenance_pause_cause_user,access.maintenance.pause.cause.user,model_maintenance_pause_cause,base.group_user,1,0,0,0
 access_maintenance_pause_cause_admin,access.maintenance.pause.cause.admin,model_maintenance_pause_cause,maintenance_time_records.group_maintenance_technical_admin,1,1,1,0
+access_maintenance_pause_wizard_user,access.maintenance.pause.wizard.user,model_maintenance_pause_wizard,base.group_user,1,1,1,0

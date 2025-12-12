@@ -17,6 +17,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'data/maintenance_stage_data.xml',
+        'data/maintenance_pause_cause_data.xml',
         'views/view_maintenance_plan_form.xml',
         'views/view_maintenance_request_form.xml',
         'views/view_maintenance_kanban_technical.xml',

@@ -28,6 +28,23 @@
             <xpath expr="//button[@name='archive_equipment_request']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_start_time"
+                        type="object"
+                        string="Inicio"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('time_state', 'in', ['active'])]}"/>
+                <button name="action_pause_time"
+                        type="object"
+                        string="Pausa"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('time_state', '!=', 'active')]}"/>
+                <button name="action_finish_time"
+                        type="object"
+                        string="Finalizar"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('time_state', '=', 'done')]}"/>
+            </xpath>
             <field name="equipment_id" position="before">
                 <field name="code" string="Código" readonly="1"
                     modifiers="{&quot;invisible&quot;: [[&quot;code&quot;, &quot;=&quot;, &quot;/&quot;]], &quot;readonly&quot;: true}"/>
@@ -81,6 +98,35 @@
                         <field name="cancellation_date_time"/>
                         <field name="check_date_time"/>
                     </group>
+                </page>
+                <page string="Registros de tiempo">
+                    <group>
+                        <field name="total_active_duration_display" readonly="1"/>
+                    </group>
+                    <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
+                        <tree editable="bottom">
+                            <field name="time_type"/>
+                            <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="duration_display" readonly="1"/>
+                            <field name="duration_hours" readonly="1"/>
+                            <field name="description"/>
+                        </tree>
+                        <form string="Registro de tiempo">
+                            <sheet>
+                                <group>
+                                    <field name="time_type"/>
+                                    <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
+                                    <field name="start_datetime"/>
+                                    <field name="end_datetime"/>
+                                    <field name="duration_display" readonly="1"/>
+                                    <field name="duration_hours" readonly="1"/>
+                                    <field name="description"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
                 </page>
             </xpath>
         </field>

@@ -52,6 +52,26 @@ class MaintenanceRequest(models.Model):
         'maintenance_request_id',
         string="Registros de tiempo"
     )
+    time_state = fields.Selection(
+        [
+            ('idle', 'Sin iniciar'),
+            ('active', 'En curso'),
+            ('pause', 'Pausado'),
+            ('done', 'Finalizado')
+        ],
+        string='Estado de tiempo',
+        default='idle'
+    )
+    total_active_duration_hours = fields.Float(
+        string='Tiempo activo (horas)',
+        compute='_compute_total_active_duration',
+        store=False
+    )
+    total_active_duration_display = fields.Char(
+        string='Tiempo activo',
+        compute='_compute_total_active_duration',
+        store=False
+    )
 
     @api.depends('stage_id')
     def _compute_is_revision(self):
@@ -192,3 +212,62 @@ class MaintenanceRequest(models.Model):
         all_requests = self.search([])
         all_requests._compute_is_previous_month_and_current()
         return True
+
+    def _close_open_time_records(self):
+        """Cerrar cualquier registro de tiempo sin fin asociado a la solicitud."""
+        now = fields.Datetime.now()
+        for request in self:
+            open_records = request.time_record_ids.filtered(lambda r: not r.end_datetime)
+            if open_records:
+                open_records.write({'end_datetime': now})
+
+    def action_start_time(self):
+        self.ensure_one()
+        now = fields.Datetime.now()
+        self._close_open_time_records()
+        self.env['maintenance.time_records'].create({
+            'maintenance_request_id': self.id,
+            'time_type': 'active',
+            'start_datetime': now,
+            'name': f"Tiempo activo - {self.name or self.code or ''}",
+        })
+        if not self.start_date:
+            self.start_date = now
+        self.time_state = 'active'
+
+    def action_finish_time(self):
+        self.ensure_one()
+        self._close_open_time_records()
+        now = fields.Datetime.now()
+        if not self.end_date:
+            self.end_date = now
+        self.time_state = 'done'
+
+    def action_pause_time(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'maintenance.pause.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_maintenance_request_id': self.id,
+            },
+        }
+
+    @api.depends('time_record_ids.time_type', 'time_record_ids.start_datetime', 'time_record_ids.end_datetime')
+    def _compute_total_active_duration(self):
+        for request in self:
+            total_seconds = 0
+            active_records = request.time_record_ids.filtered(lambda r: r.time_type == 'active')
+            for rec in active_records:
+                if rec.start_datetime:
+                    end_time = rec.end_datetime or fields.Datetime.now()
+                    delta_seconds = max((end_time - rec.start_datetime).total_seconds(), 0)
+                    total_seconds += delta_seconds
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            seconds = int(total_seconds % 60)
+            request.total_active_duration_hours = round(total_seconds / 3600.0, 2) if total_seconds else 0.0
+            # Mostrar hh:mm:ss
+            request.total_active_duration_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"

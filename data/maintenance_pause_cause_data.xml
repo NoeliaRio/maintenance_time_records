@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="pause_cause_breakfast" model="maintenance.pause.cause">
+            <field name="name">Desayuno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="pause_cause_shift_end" model="maintenance.pause.cause">
+            <field name="name">Fin de jornada laboral</field>
+            <field name="active">True</field>
+        </record>
+        <record id="pause_cause_rest" model="maintenance.pause.cause">
+            <field name="name">Descanso</field>
+            <field name="active">True</field>
+        </record>
+        <record id="pause_cause_lunch" model="maintenance.pause.cause">
+            <field name="name">Almuerzo</field>
+            <field name="active">True</field>
+        </record>
+        <record id="pause_cause_interruption" model="maintenance.pause.cause">
+            <field name="name">Interrupción</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

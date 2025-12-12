@@ -5,6 +5,7 @@
         <field name="model">maintenance.time_records</field>
         <field name="arch" type="xml">
             <tree string="Registros de tiempo">
+                <field name="maintenance_request_id"/>
                 <field name="time_type"/>
                 <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')]}"/>
                 <field name="start_datetime"/>
@@ -45,7 +46,7 @@
             <tree string="Causas de pausa">
                 <field name="name"/>
                 <field name="description"/>
-                <field name="active"/>
+                <field name="active" widget="boolean_toggle"/>
             </tree>
         </field>
     </record>
@@ -55,50 +56,50 @@
         <field name="model">maintenance.pause.cause</field>
         <field name="arch" type="xml">
             <form string="Causa de pausa">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="description"/>
-                        <field name="active"/>
-                    </group>
-                </sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="active" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="toggle_active"
+                            string="Archivar"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('active', '=', False)]}"/>
+                    <button name="toggle_active"
+                            string="Restaurar"
+                            type="object"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                </footer>
             </form>
         </field>
     </record>
 
-    <record id="view_maintenance_request_form_inherit_time_records" model="ir.ui.view">
-        <field name="name">maintenance.request.form.inherit.time.records</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref="maintenance_plan.hr_equipment_request_view_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Registros de tiempo">
-                    <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
-                        <tree editable="bottom">
-                            <field name="time_type"/>
-                            <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
-                            <field name="start_datetime"/>
-                            <field name="end_datetime"/>
-                            <field name="duration_display" readonly="1"/>
-                            <field name="duration_hours" readonly="1"/>
-                            <field name="description"/>
-                        </tree>
-                        <form string="Registro de tiempo">
-                            <sheet>
-                                <group>
-                                    <field name="time_type"/>
-                                    <field name="pause_cause_id" attrs="{'invisible': [('time_type', '!=', 'pause')], 'required': [('time_type', '=', 'pause')]}"/>
-                                    <field name="start_datetime"/>
-                                    <field name="end_datetime"/>
-                                    <field name="duration_display" readonly="1"/>
-                                    <field name="duration_hours" readonly="1"/>
-                                    <field name="description"/>
-                                </group>
-                            </sheet>
-                        </form>
-                    </field>
-                </page>
-            </xpath>
-        </field>
+    <record id="action_maintenance_time_records" model="ir.actions.act_window">
+        <field name="name">Registros de tiempos</field>
+        <field name="res_model">maintenance.time_records</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_maintenance_time_records_tree"/>
     </record>
+
+    <menuitem id="menu_maintenance_time_records"
+              name="Registro de tiempos"
+              parent="maintenance.menu_maintenance_title"
+              action="action_maintenance_time_records"
+              sequence="55"/>
+
+    <record id="action_maintenance_pause_cause" model="ir.actions.act_window">
+        <field name="name">Causas de pausa</field>
+        <field name="res_model">maintenance.pause.cause</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_maintenance_pause_cause_tree"/>
+    </record>
+
+    <menuitem id="menu_maintenance_pause_cause"
+              name="Causas de pausa"
+              parent="maintenance.menu_maintenance_title"
+              action="action_maintenance_pause_cause"
+              sequence="56"/>
+
 </odoo>
