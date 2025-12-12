@@ -47,7 +47,7 @@
                         attrs="{'invisible': [('time_state', '!=', 'pause')]}"/>
                 <button name="action_finish_time"
                         type="object"
-                        string="Finalizar"
+                        string="Finalizar tiempo"
                         class="btn-secondary"
                         attrs="{'invisible': [('time_state', '!=', 'active')]}"/>
             </xpath>
