@@ -80,6 +80,11 @@ class MaintenanceRequest(models.Model):
         compute='_compute_total_active_duration',
         store=False
     )
+    is_stage_repair_or_scrap = fields.Boolean(
+        string='¿Reparado o Desechar?',
+        compute='_compute_is_stage_repair_or_scrap',
+        store=False
+    )
 
     @api.depends('stage_id')
     def _compute_is_revision(self):
@@ -91,6 +96,14 @@ class MaintenanceRequest(models.Model):
         restricted_stages = ['Finalizado', 'Cancelado']
         for record in self:
             record.is_finish = record.stage_id.name in restricted_stages
+
+    @api.depends('stage_id')
+    def _compute_is_stage_repair_or_scrap(self):
+        stage_repaired = self.env.ref('maintenance.stage_3', raise_if_not_found=False)
+        stage_scrap = self.env.ref('maintenance.stage_4', raise_if_not_found=False)
+        target_ids = {s.id for s in (stage_repaired, stage_scrap) if s}
+        for record in self:
+            record.is_stage_repair_or_scrap = record.stage_id.id in target_ids
 
     @api.model
     def create(self, vals):
