@@ -16,7 +16,7 @@
                     </group>
                 </page>
             </xpath>
-            <xpath expr="//div[@name='button_box']/button[@name='%(hr_equipment_request_action_from_plan)d']" position="attributes">
+            <xpath expr="//div[@name='button_box']/button[@name='%(maintenance_plan.hr_equipment_request_action_from_plan)d']" position="attributes">
                 <attribute name="type">object</attribute>
                 <attribute name="name">action_view_requests</attribute>
             </xpath>
