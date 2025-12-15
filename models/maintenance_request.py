@@ -15,8 +15,16 @@ class MaintenanceRequest(models.Model):
     check_date_time = fields.Datetime(string="Fecha y horario de revisión")
     start_date = fields.Datetime(string="Fecha y horario de inicio de ejecución")
     end_date = fields.Datetime(string="Fecha y horario de fin de ejecución")
-    issue_date = fields.Date(string="Fecha de emisión de la orden")
-    date_limit = fields.Date(string="Fecha límite para ejecución")
+    issue_date = fields.Datetime(
+        string="Fecha de emisión de la orden",
+        readonly=True,
+        default=lambda self: fields.Datetime.now()
+    )
+    date_limit = fields.Date(
+        string="Fecha límite para ejecución",
+        compute="_compute_date_limit",
+        store=True
+    )
     instruction_pdf = fields.Binary(related='maintenance_plan_id.instruction_pdf', readonly=True)
     note = fields.Text(string="Instrucciones", related='maintenance_plan_id.note')
     description = fields.Text(string="Notas")
@@ -65,7 +73,7 @@ class MaintenanceRequest(models.Model):
     total_active_duration_hours = fields.Float(
         string='Tiempo activo (horas)',
         compute='_compute_total_active_duration',
-        store=False
+        store=True
     )
     total_active_duration_display = fields.Char(
         string='Tiempo activo',
@@ -88,6 +96,7 @@ class MaintenanceRequest(models.Model):
     def create(self, vals):
         if vals.get('code', '/') == '/':
             vals['code'] = self.env['ir.sequence'].next_by_code('maintenance.request.default') or '/'
+        vals.setdefault('issue_date', fields.Datetime.now())
         return super(MaintenanceRequest, self).create(vals)
 
     @api.constrains("stage_id")
@@ -129,6 +138,7 @@ class MaintenanceRequest(models.Model):
         }
 
     def button_open_view_cancelled_custom(self):
+        self._ensure_not_final_stage_for_cancel()
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.request.finish.confirmation',
@@ -142,6 +152,20 @@ class MaintenanceRequest(models.Model):
                 'allow_stage_change': True,
             },
         }
+
+    def _ensure_not_final_stage_for_cancel(self):
+        final_stage_xmlids = ['maintenance.stage_3', 'maintenance.stage_4']
+        final_stage_ids = []
+        for xmlid in final_stage_xmlids:
+            stage = self.env.ref(xmlid, raise_if_not_found=False)
+            if stage:
+                final_stage_ids.append(stage.id)
+        for request in self:
+            if final_stage_ids and request.stage_id.id in final_stage_ids:
+                raise ValidationError(
+                    _("No se puede cancelar una orden que ya está en una etapa final: '%s'.")
+                    % request.stage_id.display_name
+                )
 
     def write(self, vals):
         if 'schedule_date' in vals or 'stage_id' in vals:
@@ -186,6 +210,27 @@ class MaintenanceRequest(models.Model):
                 vals.setdefault('cancellation_date_time', fields.Datetime.now())
 
         return super(MaintenanceRequest, self).write(vals)
+
+    @api.depends('schedule_date')
+    def _compute_date_limit(self):
+        for request in self:
+            request.date_limit = False
+            if request.schedule_date:
+                sched_date = request.schedule_date
+                sched_as_date = sched_date.date() if isinstance(sched_date, datetime) else sched_date
+                first_of_next_month = (sched_as_date.replace(day=28) + timedelta(days=4)).replace(day=1)
+                last_day = first_of_next_month - timedelta(days=1)
+                request.date_limit = last_day
+
+    def _compute_date_limit(self):
+        for request in self:
+            request.date_limit = False
+            if request.schedule_date:
+                sched_date = request.schedule_date
+                sched_as_date = sched_date.date() if isinstance(sched_date, datetime) else sched_date
+                first_of_next_month = (sched_as_date.replace(day=28) + timedelta(days=4)).replace(day=1)
+                last_day = first_of_next_month - timedelta(days=1)
+                request.date_limit = last_day
 
     @api.depends('schedule_date', 'stage_id.name')
     def _compute_is_previous_month_and_current(self):

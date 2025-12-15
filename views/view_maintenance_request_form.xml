@@ -101,15 +101,26 @@
                     </group>
                 </page>
                 <page string="Otros datos">
-                    <group>
-                        <field name="issue_date"/>
+                    <!-- Grupo editable solo para Administrador Técnico -->
+                    <group groups="maintenance_time_records.group_maintenance_technical_admin">
+                        <field name="issue_date" widget="datetime"/>
                         <field name="date_limit"/>
                         <field name="cancellation_date_time"/>
                         <field name="check_date_time"/>
                     </group>
+                    <!-- Grupo solo lectura para Responsable de Equipamiento -->
+                    <group groups="maintenance.group_equipment_manager">
+                        <field name="issue_date" widget="datetime" readonly="1"/>
+                        <field name="date_limit" readonly="1"/>
+                        <field name="cancellation_date_time" readonly="1"/>
+                        <field name="check_date_time" readonly="1"/>
+                    </group>
                 </page>
                 <page string="Registros de tiempo">
-                    <field name="time_record_ids" context="{'default_maintenance_request_id': active_id}">
+                    <!-- Sección editable solo para Administrador Técnico -->
+                    <field name="time_record_ids"
+                           groups="maintenance_time_records.group_maintenance_technical_admin"
+                           context="{'default_maintenance_request_id': active_id}">
                         <tree editable="bottom">
                             <field name="user_id" readonly="1"/>
                             <field name="time_type"/>
@@ -129,11 +140,27 @@
                                     <field name="start_datetime"/>
                                     <field name="end_datetime"/>
                                     <field name="duration_display" readonly="1"/>
-                                    <field name="duration_hours" readonly="1"/>
+                                    <field name="duration_hours" invisible="1" readonly="1"/>
                                     <field name="description"/>
                                 </group>
                             </sheet>
                         </form>
+                    </field>
+                    <!-- Sección solo lectura para Responsable de Equipamiento -->
+                    <field name="time_record_ids"
+                           groups="maintenance.group_equipment_manager"
+                           readonly="1"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': True}">
+                        <tree create="false" edit="false" delete="false">
+                            <field name="user_id" readonly="1"/>
+                            <field name="time_type" readonly="1"/>
+                            <field name="pause_cause_id" readonly="1"/>
+                            <field name="start_datetime" readonly="1"/>
+                            <field name="end_datetime" readonly="1"/>
+                            <field name="duration_display" readonly="1"/>
+                            <field name="duration_hours" readonly="1"/>
+                            <field name="description" readonly="1"/>
+                        </tree>
                     </field>
                 </page>
             </xpath>

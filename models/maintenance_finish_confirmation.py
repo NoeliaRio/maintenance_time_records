@@ -39,6 +39,7 @@ class MaintenanceRequestFinishConfirmation(models.TransientModel):
         equipment = self.env['maintenance.equipment'].browse(self.env.context.get('equipment_id'))
         maintenance_plan = self.env['maintenance.plan'].browse(self.env.context.get('maintenance_plan_id'))
         if maintenance_request:
+            maintenance_request._ensure_not_final_stage_for_cancel()
             stage_cancelled = self.env.ref('maintenance.stage_4', raise_if_not_found=False)
             if not stage_cancelled:
                 stage_cancelled = self.env["maintenance.stage"].search(
