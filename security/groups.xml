@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Definición de la nueva categoría para mantenimiento -->
+        <record id="module_category_maintenance" model="ir.module.category">
+            <field name="name">Mantenimiento</field>
+        </record>
+
+        <!-- Definición del grupo de Administrador de Técnico -->
+        <record id="group_maintenance_technical_admin" model="res.groups">
+            <field name="name">Adnimistrador de Técnico</field>
+            <field name="category_id" ref="module_category_maintenance"/>
+            <field name="implied_ids" eval="[ 
+                (4, ref('base.group_system')),
+                (4, ref('mass_mailing.group_mass_mailing_user')),
+                (4, ref('analytic.group_analytic_accounting'))
+            ]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+        
+        <!-- Actualización del grupo de Responsable de Equipamiento -->
+        <record id="maintenance.group_equipment_manager" model="res.groups">
+            <field name="category_id" ref="module_category_maintenance"/>
+            <field name="implied_ids" eval="[ 
+                (4, ref('base.group_system')),
+                (4, ref('mass_mailing.group_mass_mailing_user')),
+                (4, ref('analytic.group_analytic_accounting'))
+            ]"/>
+        </record>
+        
+        <!-- Modificar permisos para modulo de equipamineto-->
+        <record id="maintenance.equipment_rule_user" model="ir.rule">
+            <field name="active" eval="False"/>
+        </record>
+
+        <!-- Permisos de acceso para módulo de peticiones de mantenimiento para el grupo Administrador de Técnico -->
+        <record id="maintenance_request_admin_rule" model="ir.model.access">
+            <field name="name">mantenimiento.admin.request</field>
+            <field name="model_id" ref="maintenance.model_maintenance_request"/>
+            <field name="group_id" ref="group_maintenance_technical_admin"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+
+        <!-- Permisos de acceso para módulo de equipamiento para el grupo Administrador de Técnico -->
+        <record id="maintenance_equipment_admin_rule" model="ir.model.access">
+            <field name="name">mantenimiento.admin.equipment</field>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
+            <field name="group_id" ref="group_maintenance_technical_admin"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+
+        <!-- Permisos de acceso para la acción de ventana para el grupo Administrador de Técnico -->
+        <record id="access_action_open_maintenance_request_form_view_inherit_admin" model="ir.model.access">
+            <field name="name">action.open.maintenance.request.form.view.inherit.admin.access</field>
+            <field name="model_id" ref="base.model_ir_actions_act_window" />
+            <field name="group_id" ref="group_maintenance_technical_admin"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="0" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <!-- Regla para Administrador de Técnico -->
+        <record id="rule_group_equipment_manager" model="ir.rule">
+            <field name="name">Regla para Administrador de Técnico</field>
+            <field name="model_id" ref="maintenance.model_maintenance_request"/> 
+            <field name="domain_force">['|', ('user_id', '=', user.id), ('id', '!=', False)]</field>
+            <field name="groups" eval="[(4, ref('group_maintenance_technical_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        
+        <!-- Regla para técnicos de mantenimiento-->
+        <record id="rule_maintenance_technical" model="ir.rule">
+            <field name="name">Regla para técnicos de mantenimiento</field>
+            <field name="model_id" ref="maintenance.model_maintenance_request"/>  
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    
+    </data>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_maintenance_request_finish_confirmation,access.maintenance.request.finish.confirmation,model_maintenance_request_finish_confirmation,base.group_user,1,1,1,0
+access_maintenance_time_records_user,access.maintenance.time.records.user,model_maintenance_time_records,base.group_user,1,1,1,0
+access_maintenance_time_records_admin,access.maintenance.time.records.admin,model_maintenance_time_records,maintenance_time_records.group_maintenance_technical_admin,1,1,1,1
+access_maintenance_pause_cause_user,access.maintenance.pause.cause.user,model_maintenance_pause_cause,base.group_user,1,0,0,0
+access_maintenance_pause_cause_admin,access.maintenance.pause.cause.admin,model_maintenance_pause_cause,maintenance_time_records.group_maintenance_technical_admin,1,1,1,0
+access_maintenance_pause_wizard_user,access.maintenance.pause.wizard.user,model_maintenance_pause_wizard,base.group_user,1,1,1,0
