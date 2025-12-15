@@ -5,6 +5,7 @@
     'category': 'Maintenance',
     'author': 'Noelia Rio',
     'license': 'LGPL-3',
+    'icon': 'maintenance_time_records/static/description/icon.png',
     'depends': [
         'maintenance',
         'analytic',
@@ -21,7 +22,7 @@
         'views/view_maintenance_plan_form.xml',
         'views/view_maintenance_request_form.xml',
         'views/view_maintenance_kanban_technical.xml',
-        'views/maintenance_time_records_views.xml'
+        'views/view_maintenance_time_records.xml'
     ],
     'post_init_hook': 'post_init_hook',
     'installable': True,

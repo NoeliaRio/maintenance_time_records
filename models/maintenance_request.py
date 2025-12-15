@@ -222,16 +222,6 @@ class MaintenanceRequest(models.Model):
                 last_day = first_of_next_month - timedelta(days=1)
                 request.date_limit = last_day
 
-    def _compute_date_limit(self):
-        for request in self:
-            request.date_limit = False
-            if request.schedule_date:
-                sched_date = request.schedule_date
-                sched_as_date = sched_date.date() if isinstance(sched_date, datetime) else sched_date
-                first_of_next_month = (sched_as_date.replace(day=28) + timedelta(days=4)).replace(day=1)
-                last_day = first_of_next_month - timedelta(days=1)
-                request.date_limit = last_day
-
     @api.depends('schedule_date', 'stage_id.name')
     def _compute_is_previous_month_and_current(self):
         today = fields.Date.today()

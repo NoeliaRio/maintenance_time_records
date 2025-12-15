@@ -24,7 +24,7 @@
                     class="btn btn-danger"
                     icon="fa-close"
                     groups="maintenance_time_records.group_maintenance_technical_admin"
-                    attrs="{'invisible': [('is_finish', '=', True)]}"/>
+                    attrs="{'invisible': ['|', ('is_finish', '=', True), ('stage_id', 'in', [ref('maintenance.stage_3'), ref('maintenance.stage_4')])]}"/>
             </header>
             <xpath expr="//button[@name='archive_equipment_request']" position="attributes">
                 <attribute name="invisible">1</attribute>
