@@ -60,7 +60,7 @@
                                             </div>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                            <field name="kanban_state" widget="state_selection"/>
+                                            <field name="kanban_state" />
                                             <field name="user_id" widget="many2one_avatar_user"/>
                                             <button
                                                 type="object"
