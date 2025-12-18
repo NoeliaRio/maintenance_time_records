@@ -99,7 +99,7 @@
             <xpath expr="//notebook/page[@name='description_page']" position="before">
                 <page string="Instructivo de Mantenimiento">
                     <group>
-                        <field name="instruction_pdf" widget="pdf_viewer" attrs="{'invisible': [('instruction_pdf', '=', False)]}" readonly="1"/>
+                        <field name="instruction_pdf"  attrs="{'invisible': [('instruction_pdf', '=', False)]}" readonly="1"/>
                     </group>
                 </page>
                 <page string="Otros datos">
